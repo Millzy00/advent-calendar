@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🎄 12-Day Actuarial Christmas Advent Calendar</title>
+<style>
+:root {
+--bg-dark: #0c1f17;
+--bg-mid: #163326;
+--crimson: #8f1d24;
+--crimson-bright: #b92b34;
+--card: #183629;
+--card-solved: #204736;
+--gold: #f0c76e;
+--gold-deep: #c99738;
+--cream: #fcf7ec;
+--muted: #d6dfd8;
+--holly: #39a86b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+margin: 0;
+font-family: "Georgia", "Palatino Linotype", serif;
+background:
+radial-gradient(circle at 20% 15%, rgba(185, 43, 52, 0.25), transparent 45%),
+radial-gradient(circle at 80% 10%, rgba(240, 199, 110, 0.16), transparent 40%),
+linear-gradient(180deg, var(--bg-mid) 0%, var(--bg-dark) 100%);
+color: var(--cream);
+min-height: 100vh;
+padding: 28px 16px 72px;
+overflow-x: hidden;
+position: relative;
+}
+
+/* Subtle festive garland top bar */
+.garland {
+position: fixed;
+top: 0; left: 0; right: 0;
+height: 6px;
+background: repeating-linear-gradient(
+90deg,
+var(--crimson-bright) 0 24px,
+var(--gold) 24px 48px,
+var(--holly) 48px 72px
+);
+z-index: 40;
+box-shadow: 0 2px 10px rgba(0,0,0,0.45);
+}
+
+/* Snowflakes */
+.snow-layer {
+position: fixed;
+inset: 0;
+pointer-events: none;
+z-index: 1;
+overflow: hidden;
+}
+.flake {
+position: absolute;
+top: -24px;
+color: rgba(255, 255, 255, 0.72);
+user-select: none;
+animation: fall linear infinite;
+}
+@keyframes fall {
+to { transform: translateY(108vh) rotate(360deg); }
+}
+
+.wrap {
+max-width: 980px;
+margin: 0 auto;
+position: relative;
+z-index: 2;
+}
+
+header {
+text-align: center;
+margin-bottom: 24px;
+padding: 22px 18px;
+background: linear-gradient(145deg, rgba(143, 29, 36, 0.42), rgba(24, 54, 41, 0.72));
+border: 1.5px solid rgba(240, 199, 110, 0.45);
+border-radius: 20px;
+box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+.badge {
+display: inline-block;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+font-size: 0.75rem;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: var(--gold);
+background: rgba(0, 0, 0, 0.28);
+border: 1px solid rgba(240, 199, 110, 0.35);
+padding: 5px 12px;
+border-radius: 999px;
+margin-bottom: 10px;
+}
+
+h1 {
+margin: 0 0 10px;
+font-size: clamp(1.7rem, 4vw, 2.5rem);
+color: var(--gold);
+text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+p.sub {
+margin: 0 auto;
+max-width: 640px;
+color: var(--muted);
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+line-height: 1.55;
+font-size: 0.98rem;
+}
+
+/* Letter Bank */
+.bank {
+margin: 22px auto 30px;
+padding: 18px 16px;
+background: linear-gradient(180deg, rgba(143, 29, 36, 0.35), rgba(18, 43, 32, 0.9));
+border: 1.5px solid rgba(240, 199, 110, 0.4);
+border-radius: 18px;
+text-align: center;
+box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+}
+
+.bank-title {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+font-size: 0.95rem;
+color: var(--cream);
+}
+
+.tiles {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 9px;
+margin-top: 12px;
+}
+
+.tile {
+width: 42px;
+height: 50px;
+display: grid;
+place-items: center;
+border-radius: 10px;
+font-family: "Georgia", serif;
+font-weight: 700;
+font-size: 1.2rem;
+background: rgba(255, 255, 255, 0.06);
+border: 1.5px dashed rgba(240, 199, 110, 0.35);
+color: rgba(240, 199, 110, 0.35);
+transition: all 0.25s ease;
+}
+
+.tile.found {
+background: linear-gradient(145deg, #f6d583, #d19b39);
+color: #2c130c;
+border: 1.5px solid #fff1c7;
+box-shadow: 0 4px 14px rgba(240, 199, 110, 0.4);
+transform: translateY(-2px);
+}
+
+/* Advent Doors Grid */
+.grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+gap: 16px;
+}
+
+.door {
+position: relative;
+background: linear-gradient(155deg, var(--card) 0%, #11281e 100%);
+border: 1.5px solid rgba(240, 199, 110, 0.35);
+border-radius: 16px;
+padding: 20px 18px;
+cursor: pointer;
+transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+text-align: left;
+color: var(--cream);
+width: 100%;
+box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+}
+
+.door:hover {
+transform: translateY(-3px);
+border-color: var(--gold);
+box-shadow: 0 10px 24px rgba(240, 199, 110, 0.2);
+}
+
+.door.solved {
+background: linear-gradient(155deg, var(--card-solved) 0%, #163829 100%);
+border-color: var(--holly);
+}
+
+.door.finale-door {
+background: linear-gradient(145deg, #8f1d24 0%, #591116 100%);
+border: 1.5px solid var(--gold);
+}
+
+.door-top {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 8px;
+}
+
+.door-num {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+font-size: 0.8rem;
+color: var(--gold);
+font-weight: 700;
+letter-spacing: 1px;
+text-transform: uppercase;
+}
+
+.door-icon {
+font-size: 1.25rem;
+}
+
+.door-title {
+font-size: 1.08rem;
+font-weight: 700;
+margin: 4px 0 6px;
+color: var(--cream);
+}
+
+.door-status {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+font-size: 0.83rem;
+color: var(--muted);
+}
+
+/* Modal */
+.modal-backdrop {
+position: fixed;
+inset: 0;
+background: rgba(5, 14, 10, 0.78);
+backdrop-filter: blur(4px);
+display: none;
+align-items: center;
+justify-content: center;
+padding: 16px;
+z-index: 60;
+}
+.modal-backdrop.open { display: flex; }
+
+.modal {
+background: linear-gradient(160deg, #1b3b2d 0%, #10241b 100%);
+border: 2px solid var(--gold);
+border-radius: 20px;
+max-width: 580px;
+width: 100%;
+padding: 26px;
+max-height: 90vh;
+overflow-y: auto;
+box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.q-text {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+font-size: 1.05rem;
+line-height: 1.65;
+margin: 14px 0 18px;
+color: var(--cream);
+}
+
+.ans-box {
+display: none;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+background: rgba(0, 0, 0, 0.32);
+border-left: 3px solid var(--gold);
+padding: 13px 15px;
+border-radius: 10px;
+margin-bottom: 18px;
+line-height: 1.55;
+}
+.ans-box.show { display: block; }
+
+.btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+
+button.action-btn {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+cursor: pointer;
+border-radius: 10px;
+padding: 10px 15px;
+border: none;
+font-weight: 600;
+font-size: 0.92rem;
+}
+
+.btn-gold {
+background: linear-gradient(135deg, #f4cf76, #d49b35);
+color: #24110b;
+}
+.btn-green {
+background: var(--holly);
+color: #081c11;
+}
+.btn-ghost {
+background: rgba(255, 255, 255, 0.1);
+color: var(--cream);
+border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+input.anagram-input {
+width: 100%;
+padding: 13px;
+border-radius: 12px;
+border: 1.5px solid var(--gold);
+background: rgba(0, 0, 0, 0.35);
+color: var(--gold);
+font-family: "Georgia", serif;
+font-weight: 700;
+font-size: 1.2rem;
+letter-spacing: 4px;
+text-transform: uppercase;
+text-align: center;
+margin: 12px 0 16px;
+}
+
+.celebrate {
+display: none;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+margin-top: 16px;
+padding: 16px;
+border-radius: 12px;
+background: linear-gradient(145deg, rgba(143, 29, 36, 0.55), rgba(57, 168, 107, 0.25));
+border: 1.5px solid var(--gold);
+line-height: 1.6;
+}
+.celebrate.show { display: block; }
+</style>
+</head>
+<body>
+<div class="garland"></div>
+<div class="snow-layer" id="snowLayer"></div>
+
+<div class="wrap">
+<header>
+<div class="badge">✨ Festive Edition · 12 Days of Christmas ✨</div>
+<h1>🎄 Actuarial Christmas Advent Calendar 🎄</h1>
+<p class="sub">
+Open one festive door each day and solve the maths riddle inside to collect a golden letter.
+On <strong>Day 12</strong>, unscramble all 11 letters to unlock your Christmas surprise!
+</p>
+</header>
+
+<section class="bank">
+<div class="bank-title">🎁 <strong>Your Christmas Anagram Vault</strong> — Collect all 11 letters for Day 12</div>
+<div class="tiles" id="letterTiles"></div>
+</section>
+
+<div class="grid" id="doorGrid"></div>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop">
+<div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+const CARDS = [
+{ day: 1, icon: "🕯️", letter: "D", topic: "Force of Mortality", q: "A life aged x experiences a constant force of mortality μ = 0.05 per year. Calculate the exact probability (to 4 decimal places) that the life dies between exact ages x + 10 and x + 20.", a: "exp(-0.5) - exp(-1.0) ≈ 0.6065 - 0.3679 = 0.2386 (23.86%)." },
+{ day: 2, icon: "❄️", letter: "R", topic: "Martingales & Stopping Times", q: "A fair coin is tossed repeatedly. You gain £1 for Heads and lose £1 for Tails, starting at £0. What is the probability that your cumulative total reaches +£3 before dropping to -£2?", a: "By Gambler's Ruin / Optional Stopping: 2 / (3 + 2) = 2/5 (0.4)." },
+{ day: 3, icon: "🔔", letter: "I", topic: "Linear Algebra & Eigenvalues", q: "Let A be a 3×3 matrix with tr(A) = 10 and det(A) = 24. Given that λ₁ = 2 is an eigenvalue, find the remaining two eigenvalues.", a: "λ₂ + λ₃ = 8 and λ₂ · λ₃ = 12, so the other two eigenvalues are 2 and 6." },
+{ day: 4, icon: "🦌", letter: "N", topic: "Poisson Process", q: "Claims arrive at an insurer following a Poisson process at rate λ = 3 per hour. Given that exactly 2 claims occurred during the first hour, what is the expected arrival time (in minutes) of the first claim?", a: "Conditional on N(1) = 2, arrival times act as order statistics of two Uniform(0, 60) variables: 60 / (2 + 1) = 20 minutes." },
+{ day: 5, icon: "⭐", letter: "G", topic: "Complex Analysis", q: "Find the principal value of i^i in exact form using e and π.", a: "Since i = exp(iπ/2), i^i = (exp(iπ/2))^i = exp(-π/2) ≈ 0.20788." },
+{ day: 6, icon: "🧦", letter: "B", topic: "Combinatorics & Derangements", q: "Five actuaries place identical umbrellas into a stand before a Christmas party and pick one at random afterward. What is the exact probability that none of them gets their own umbrella?", a: "Derangements !5 = 44 out of 5! = 120 permutations: 44/120 = 11/30 (≈ 0.3667)." },
+{ day: 7, icon: "🎄", letter: "E", topic: "Improper Integrals", q: "Evaluate the improper integral from -∞ to +∞ of x² · exp(-x²) dx.", a: "Integration by parts gives √π / 2." },
+{ day: 8, icon: "🛷", letter: "A", topic: "Brownian Motion", q: "Let {W_t} (t ≥ 0) be a standard 1-dimensional Brownian motion. Compute E[W_2² · W_5²].", a: "Write W_5 = (W_5 - W_2) + W_2. By independent increments: E[W_2²]E[(W_5 - W_2)²] + E[W_2⁴] = (2)(3) + 12 = 18." },
+{ day: 9, icon: "🥂", letter: "R", topic: "Modular Arithmetic", q: "Find the last two digits of 7^2026 (i.e., 7^2026 mod 100).", a: "Since 7⁴ = 2401 ≡ 1 (mod 100) and 2026 = 4(506) + 2, 7^2026 ≡ 7² = 49 (mod 100)." },
+{ day: 10, icon: "🧣", letter: "E", topic: "Order Statistics", q: "Let U₁, U₂, U₃, U₄ be i.i.d. Uniform(0, 1) random variables. What is the variance of U_(4) = max(U₁, U₂, U₃, U₄)?", a: "U_(4) ~ Beta(4, 1), so Var = (4 · 1) / ((4 + 1)² · (4 + 1 + 1)) = 4 / (25 · 6) = 2/75." },
+{ day: 11, icon: "🍪", letter: "G", topic: "Actuarial Perpetuities", q: "An increasing perpetuity-immediate pays £100 at time 1, £200 at time 2, £300 at time 3, and so on forever. At an effective annual interest rate of i = 10%, find its present value.", a: "100 · (Ia)_∞ = 100 · ((1 + i) / i²) = 100 · (1.10 / 0.01) = £11,000." }
+];
+
+const solved = new Set();
+const grid = document.getElementById("doorGrid");
+const tiles = document.getElementById("letterTiles");
+const backdrop = document.getElementById("modalBackdrop");
+const modal = document.getElementById("modalContent");
+
+// Create gentle falling snowflakes
+const snowLayer = document.getElementById("snowLayer");
+const flakes = ["❄", "❅", "❆", "✦"];
+for (let i = 0; i < 28; i++) {
+const span = document.createElement("span");
+span.className = "flake";
+span.textContent = flakes[i % flakes.length];
+span.style.left = Math.random() * 100 + "vw";
+span.style.fontSize = (10 + Math.random() * 14) + "px";
+span.style.animationDuration = (9 + Math.random() * 12) + "s";
+span.style.animationDelay = (-Math.random() * 15) + "s";
+snowLayer.appendChild(span);
+}
+
+function renderTiles() {
+tiles.innerHTML = "";
+CARDS.forEach((c) => {
+const div = document.createElement("div");
+div.className = "tile" + (solved.has(c.day) ? " found" : "");
+div.textContent = solved.has(c.day) ? c.letter : "★";
+tiles.appendChild(div);
+});
+}
+
+function renderDoors() {
+grid.innerHTML = "";
+CARDS.forEach((c) => {
+const btn = document.createElement("button");
+btn.className = "door" + (solved.has(c.day) ? " solved" : "");
+btn.innerHTML = `
+<div class="door-top">
+<span class="door-num">Day ${c.day}</span>
+<span class="door-icon">${solved.has(c.day) ? "✅" : c.icon}</span>
+</div>
+<div class="door-title">${c.topic}</div>
+<div class="door-status">${solved.has(c.day) ? "Unlocked letter: " + c.letter : "Tap to open festive door"}</div>
+`;
+btn.onclick = () => openCardModal(c);
+grid.appendChild(btn);
+});
+
+const finale = document.createElement("button");
+finale.className = "door finale-door";
+finale.innerHTML = `
+<div class="door-top">
+<span class="door-num">Day 12 · Finale</span>
+<span class="door-icon">🎁</span>
+</div>
+<div class="door-title">Unscramble & Claim Prize</div>
+<div class="door-status">${solved.size} of 11 golden letters collected</div>
+`;
+finale.onclick = openFinaleModal;
+grid.appendChild(finale);
+}
+
+function openCardModal(c) {
+modal.innerHTML = `
+<div class="door-num">${c.icon} Day ${c.day} · ${c.topic}</div>
+<div class="q-text">${c.q}</div>
+<div class="ans-box" id="ansBox"><strong>Worked Solution:</strong> ${c.a}</div>
+<div class="btn-row">
+<button class="action-btn btn-ghost" id="toggleAnsBtn">Reveal Solution</button>
+<button class="action-btn btn-green" id="collectBtn">Collect Letter "${c.letter}"</button>
+<button class="action-btn btn-ghost" id="closeBtn">Close</button>
+</div>
+`;
+backdrop.classList.add("open");
+document.getElementById("toggleAnsBtn").onclick = () => {
+document.getElementById("ansBox").classList.toggle("show");
+};
+document.getElementById("collectBtn").onclick = () => {
+solved.add(c.day);
+renderTiles();
+renderDoors();
+backdrop.classList.remove("open");
+};
+document.getElementById("closeBtn").onclick = () => backdrop.classList.remove("open");
+}
+
+function openFinaleModal() {
+const letters = CARDS.map((c) => c.letter).join(" · ");
+modal.innerHTML = `
+<div class="door-num">🎄 Day 12 · Christmas Finale</div>
+<div class="q-text">
+Eleven equations, eleven letters—solved and rearranged!<br/>
+Unscramble <strong>${letters}</strong> to reveal your festive Christmas reward:
+</div>
+<input class="anagram-input" id="anagramInput" placeholder="ENTER 11-LETTER WORD" maxlength="11" />
+<div class="btn-row">
+<button class="action-btn btn-gold" id="checkBtn">✨ Unlock Christmas Prize ✨</button>
+<button class="action-btn btn-ghost" id="closeBtn">Close</button>
+</div>
+<div class="celebrate" id="celebrateBox"></div>
+`;
+backdrop.classList.add("open");
+document.getElementById("checkBtn").onclick = () => {
+const val = document.getElementById("anagramInput").value.trim().toUpperCase();
+const box = document.getElementById("celebrateBox");
+box.classList.add("show");
+if (val === "GINGERBREAD") {
+box.innerHTML = "🎄✨ <strong>MERRY CHRISTMAS — GINGERBREAD!</strong> ✨🎄<br/>You cracked every actuarial riddle and unscrambled the secret word. Time to claim your festive gingerbread treat!";
+} else {
+box.innerHTML = "❄️ Not quite! Hint: it’s a classic spiced Christmas bake made from <strong>G, I, N, G, E, R, B, R, E, A, D</strong>.";
+}
+};
+document.getElementById("closeBtn").onclick = () => backdrop.classList.remove("open");
+}
+
+backdrop.onclick = (e) => { if (e.target === backdrop) backdrop.classList.remove("open"); };
+renderTiles();
+renderDoors();
+</script>
+</body>
+</html>
